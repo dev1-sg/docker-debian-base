@@ -10,7 +10,8 @@ ENV NODE_VERSION="${NODE_VERSION}"
 
 FROM base AS build
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     tar xz-utils
 
 RUN ARCH="$(case $(uname -m) in x86_64) echo x64 ;; aarch64) echo arm64 ;; esac)" \
