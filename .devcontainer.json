@@ -1,0 +1,23 @@
+{
+  "image": "public.ecr.aws/dev1-sg/devcontainer/debian-base:latest",
+  "name": "dev1-sg-docker-debian-base",
+  "features": {
+    "ghcr.io/dev1-sg/devcontainers/docker-in-docker:latest": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh"
+      },
+      "extensions": [
+        "ms-vscode-remote.remote-containers",
+        "github.codespaces",
+        "google.geminicodeassist"
+      ]
+    }
+  },
+  "containerUser": "root",
+  "workspaceMount": "source=${localWorkspaceFolder}/,target=/root/dev1-sg-docker-debian-base,type=bind,consistency=cached",
+  "workspaceFolder": "/root",
+  "postCreateCommand": "sudo chown -R root:root /root"
+}

@@ -1,0 +1,25 @@
+# syntax=docker.io/docker/dockerfile:1
+
+FROM public.ecr.aws/dev1-sg/base/ubuntu:noble AS base
+
+ARG NODE_VERSION
+
+USER root
+
+ENV NODE_VERSION="${NODE_VERSION}"
+
+FROM base AS build
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    tar xz-utils
+
+RUN ARCH="$(case $(uname -m) in x86_64) echo x64 ;; aarch64) echo arm64 ;; esac)" \
+    && curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" -o /tmp/node.tar.xz \
+    && tar --strip-components=1 -xvf /tmp/node.tar.xz -C /usr/local/ --wildcards '*/bin/*' '*/lib/*' '*/include/*' '*/share/*'
+
+FROM base AS final
+
+COPY --from=build /usr/local /usr/local
+
+RUN apt-get clean \
+    && rm -rf /var/lib/apt/lists/*

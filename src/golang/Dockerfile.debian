@@ -1,0 +1,28 @@
+# syntax=docker.io/docker/dockerfile:1
+
+FROM public.ecr.aws/dev1-sg/base/debian:bookworm AS base
+
+ARG GO_VERSION
+
+USER root
+
+ENV GO_VERSION="${GO_VERSION}" \
+    GOPATH=/go \
+    GOTOOLCHAIN=local
+
+FROM base AS build
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    tar xz-utils
+
+RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-$(case $(uname -m) in x86_64) echo amd64 ;; aarch64) echo arm64 ;; esac).tar.gz" -o /tmp/go.tar.gz \
+    && tar -xvf /tmp/go.tar.gz -C /usr/local
+
+FROM base AS final
+
+ENV PATH="/go/bin:/usr/local/go/bin:${PATH}"
+
+COPY --from=build /usr/local /usr/local
+
+RUN apt-get clean \
+    && rm -rf /var/lib/apt/lists/*

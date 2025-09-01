@@ -1,0 +1,19 @@
+---
+name: Apply single platform tags
+description: Apply tags to it
+
+inputs:
+  AWS_ECR_PUBLIC_IMAGE_NAME:
+    description: Image name
+    required: true
+  AWS_ECR_PUBLIC_IMAGE_TAG_SCRIPT:
+    description: Image tag script
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Extract Version from Dockerfile
+      id: extract_version
+      shell: bash
+      run: cd src/${{ inputs.AWS_ECR_PUBLIC_IMAGE_NAME }} && . ./${{ inputs.AWS_ECR_PUBLIC_IMAGE_TAG_SCRIPT }} && cd -

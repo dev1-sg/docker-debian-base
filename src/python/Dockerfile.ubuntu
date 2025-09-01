@@ -1,0 +1,24 @@
+# syntax=docker.io/docker/dockerfile:1
+
+FROM public.ecr.aws/dev1-sg/base/ubuntu:noble AS base
+
+ARG PYTHON_VERSION
+
+USER root
+
+ENV PYTHON_VERSION="${PYTHON_VERSION}"
+
+FROM base AS final
+
+ENV UV_INSTALL_DIR=/usr/local/bin \
+    UV_PYTHON_INSTALL_DIR=/opt/uv \
+    UV_PYTHON_BIN_DIR=/usr/local/bin \
+    UV_TOOL_DIR=/opt/uv/tool \
+    UV_TOOL_BIN_DIR=/usr/local/bin
+
+RUN mkdir -p /opt/uv /opt/uv/tool \
+    && curl -fsSL https://astral.sh/uv/install.sh | bash \
+    && uv python install "${PYTHON_VERSION}" --default \
+    && uv tool install pip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
