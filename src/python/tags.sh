@@ -2,8 +2,8 @@
 
 set -e
 
-ubuntu=$(sed -n 's/^FROM .*:\([a-zA-Z]*\).*/\1/p' Dockerfile.ubuntu | head -1)
-debian=$(sed -n 's/^FROM .*:\([a-zA-Z]*\).*/\1/p' Dockerfile.debian | head -1)
+ubuntu=$(sed -n 's/^FROM .*:\([a-z]*\).*/\1/p' Dockerfile.ubuntu | head -1)
+debian=$(sed -n 's/^FROM .*:\([a-z]*\).*/\1/p' Dockerfile.debian | head -1)
 python=$(cat .python-version)
 
 if [ -z "$ubuntu" ] || [ -z "$debian" ] || [ -z "$python" ]; then exit 1; fi
